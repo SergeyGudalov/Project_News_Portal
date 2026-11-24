@@ -33,7 +33,7 @@ class Category(models.Model):
     name = models.CharField(unique=True)
 
     def __str__(self):
-        return self.name
+        return self.name.title()
 
 
 class Post(models.Model):
@@ -71,6 +71,8 @@ class Post(models.Model):
 
     def preview(self):
         return self.text[:124] + "..."
+
+
 
 
 class PostCategory(models.Model):

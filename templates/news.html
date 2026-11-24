@@ -1,0 +1,25 @@
+{% extends 'flatpages/default.html' %}
+{% load censor %}
+
+{% block title %} Новости {% endblock title %}
+
+{% block content %}
+
+<h1>Все новости</h1>
+
+<h3>Количество новостей: {{news|length }}</h3>
+
+{% for item in news %}
+<h2>
+    <a href="{% url 'news_detail' item.pk %}">{{ item.title|censor }}</a>
+
+</h2>
+<p>{{ item.created_at|date:"d.m.Y" }}</p>
+<p>{{ item.text|truncatewords:20|censor }}</p>
+
+
+<hr>
+
+{% endfor %}
+
+{% endblock content %}

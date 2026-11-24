@@ -1,0 +1,124 @@
+# Шаг 1. Создаем двух пользователей
+
+user1 = User.objects.create_user('vladimir')
+user2 = User.objects.create_user('ivan')
+
+# Шаг 2. Создание двух авторов связанных с пользователями
+
+author1 = Author.objects.create(user=user1)
+author2 = Author.objects.create(user=user2)
+
+# Шаг 3. Добавить 4 категории в модель Category
+
+category1 = Category.objects.create(name='Спорт')
+category2 = Category.objects.create(name='Политика')
+category3 = Category.objects.create(name='Наука')
+category4 = Category.objects.create(name='Образование')
+
+# Шаг 4. Создание 2 статей и новости.
+
+post1 = Post.objects.create(
+    author=author1,
+    post_type=Post.ARTICLE,
+    title='Развитие Баскетбола'
+    text='В этой статье описывается процесс развития баскетбола
+и его влиянии на человческий организм. ' * 10
+)
+
+post2 = Post.objects.create(
+    author=author2,
+    post_type=Post.ARTICLE,
+    title='Современное образование',
+    text='В этой статье подробно рассматриваются современные методы
+    и подходы к образованию. ' * 10
+)
+
+post3 = Post.objects.create(
+    author=author1,
+    post_type=Post.NEWS,
+    title='Научное открытие'
+    text='Ученые сообщили о новом научном открытии.' * 10
+)
+
+# Шаг 5. Присваивание категорий публикациям
+
+post1.categories.add(category1, category3)
+post2.categories.add(category4)
+post3.categories.add(category4, category2)
+
+# Шаг 6. Создание 4 комментариев к разным публикациям
+
+comment1 = Comment.objects.create(post=post1, user=user1, text='Хорошая статья')
+
+comment2 = Comment.objects.create(post=post1, user=user2, text='Спасибо за комментарий')
+
+comment3 = Comment.objects.create(post=post2, user=user1, text='Было очень полезно прочитать эту статью!')
+
+comment4 = Comment.objects.create(post=post3, user=user2, text='Необычная новость!')
+
+# Шаг 7. Корректировка рейтингов публикаций и комментариев.
+
+post1.like()
+post1.like()
+post1.like()
+post1.dislike()
+
+post2.like()
+post2.like()
+
+post3.like()
+post3.like()
+post3.like()
+post3.like()
+post3.dislike()
+
+comment1.like()
+comment1.like()
+comment1.dislike()
+
+comment2.like()
+
+comment3.like()
+comment3.like()
+
+comment4.like()
+comment4.dislike()
+
+# Шаг 8. Обновление рейтингов авторов
+
+author1.update_rating()
+author2.update_rating()
+
+# Шаг 9. Выводим username и рейтинг лучшего автора.
+
+Author.objects.order_by('-rating').values(
+    'user__username', 'rating'
+).first()
+
+# Шаг 10. Вывод username автора, рейтинг, заголовок, превью лучшей статьи, основываясь на лайках / дислайках
+
+best_article = Post.objects.filter(post_type='AR').order_by('-rating').first()
+
+print(best_article.created_at)  # Вывод даты добавления
+print(best_article.author.user.username)  # Вывод username
+print(best_article.rating)  # Вывод рейтинга
+print(best_article.title)  # Вывод заголовка
+print(best_article.preview())  # Вывод превью
+
+# Шаг 11. Вывод всех комментариев к этой статье
+
+article_comments = Comment.objects.filter(
+        post=best_article
+    ).select_related('user').order_by('created_at')
+
+print('Комментарии к лучшей статье:')
+for comment in article_comments:
+        print(
+            comment.created_at,
+            comment.user.username,
+            comment.rating,
+            comment.text
+        )
+
+    else:
+        print('Статей пока нет.')
