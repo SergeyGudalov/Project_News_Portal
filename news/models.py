@@ -29,6 +29,10 @@ class Author(models.Model):
         self.rating = rating
         self.save()
 
+    # Вывод username автора
+    def __str__(self):
+        return self.user.username
+
 class Category(models.Model):
     name = models.CharField(unique=True)
 

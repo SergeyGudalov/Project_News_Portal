@@ -15,7 +15,7 @@
 
 </h2>
 <p>{{ item.created_at|date:"d.m.Y" }}</p>
-<p>{{ item.text|truncatewords:20|censor }}</p>
+<p>{{ item.text|truncatechars:20|censor }}</p>
 
 
 <hr>

@@ -8,7 +8,7 @@ censored_words = ['редиска',
 
 
 @register.filter()
-def censored_word(value):
+def censor(value):
     if not isinstance(value, str):
         raise ValueError(f"Фильтр применим только к строкам, получен {type(value)}")
 
